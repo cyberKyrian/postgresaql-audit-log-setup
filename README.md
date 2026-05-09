@@ -59,25 +59,6 @@ This simulates the workflow of a **Database Security Engineer** or **SOC Analyst
 
 The official PostgreSQL Docker image does not ship with pgAudit pre-installed. I wrote a custom `Dockerfile` to install the extension cleanly:
 
-```dockerfile
-FROM postgres:15
-
-RUN apt-get update && \
-    apt-get install -y postgresql-15-pgaudit && \
-    rm -rf /var/lib/apt/lists/*
-```
-
-```bash
-# Build and run the container
-docker build -t pgaudit-custom .
-
-docker run --name pgaudit-lab \
-  -e POSTGRES_PASSWORD=SecureLab123 \
-  -e POSTGRES_USER=labadmin \
-  -e POSTGRES_DB=bankdb \
-  -p 5432:5432 \
-  -d pgaudit-custom
-```
 <img width="587" height="338" alt="Screenshot 2026-05-09 181010" src="https://github.com/user-attachments/assets/38db7501-c959-4558-a984-66bdb417cea7" />
 
 <img width="596" height="56" alt="Screenshot 2026-05-09 181033" src="https://github.com/user-attachments/assets/cf2fe2a9-e82b-4aea-9fb4-258d517c5924" />
@@ -87,22 +68,9 @@ docker run --name pgaudit-lab \
 
 ### 2. Configure pgAudit for Full Session Logging
 
-```sql
--- Load the pgAudit extension
-CREATE EXTENSION IF NOT EXISTS pgaudit;
 
--- Enable comprehensive audit coverage
-ALTER SYSTEM SET shared_preload_libraries = 'pgaudit';
-ALTER SYSTEM SET pgaudit.log = 'all';
-ALTER SYSTEM SET log_line_prefix = '%t [%p] %u@%d ';
-```
 
 After restarting the container, verified configuration:
-
-```sql
-SHOW pgaudit.log;
--- Returns: all
-```
 
 > **Screenshot:** pgAudit extension loaded and `log = all` confirmed
 
@@ -114,23 +82,6 @@ SHOW pgaudit.log;
 
 Created a realistic schema representing customer and transaction data typical of a core banking system:
 
-```sql
-CREATE TABLE customers (
-  id             SERIAL PRIMARY KEY,
-  full_name      VARCHAR(100),
-  account_number VARCHAR(20),
-  bvn            VARCHAR(11),       -- Regulated PII under NDPR
-  balance        DECIMAL(15,2)
-);
-
-CREATE TABLE transactions (
-  id          SERIAL PRIMARY KEY,
-  customer_id INT REFERENCES customers(id),
-  amount      DECIMAL(15,2),
-  txn_type    VARCHAR(10),
-  txn_date    TIMESTAMP DEFAULT NOW()
-);
-```
 <img width="590" height="425" alt="Screenshot 2026-05-09 181356" src="https://github.com/user-attachments/assets/995c9a3c-ecfe-41b0-8219-999469e7ea7d" />
 
 <img width="584" height="146" alt="Screenshot 2026-05-09 181413" src="https://github.com/user-attachments/assets/093c58df-ad86-4de1-985a-4d72c6964722" />
@@ -157,10 +108,6 @@ Five suspicious actions were executed to generate realistic audit events:
 
 ### 5. Extract & Analyse Audit Logs
 
-```powershell
-# Extract all AUDIT log entries (Windows PowerShell)
-docker logs pgaudit-lab 2>&1 | Select-String "AUDIT" > audit_report.txt
-```
 <img width="728" height="463" alt="Screenshot 2026-05-09 182647" src="https://github.com/user-attachments/assets/f963a584-c7c1-43f1-a336-a0ce2494f3b7" />
 
 ---
