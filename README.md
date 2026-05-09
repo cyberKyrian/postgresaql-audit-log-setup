@@ -78,6 +78,10 @@ docker run --name pgaudit-lab \
   -p 5432:5432 \
   -d pgaudit-custom
 ```
+<img width="587" height="338" alt="Screenshot 2026-05-09 181010" src="https://github.com/user-attachments/assets/38db7501-c959-4558-a984-66bdb417cea7" />
+
+<img width="596" height="56" alt="Screenshot 2026-05-09 181033" src="https://github.com/user-attachments/assets/cf2fe2a9-e82b-4aea-9fb4-258d517c5924" />
+
 
 ---
 
@@ -101,7 +105,8 @@ SHOW pgaudit.log;
 ```
 
 > **Screenshot:** pgAudit extension loaded and `log = all` confirmed
-> *(add screenshot here)*
+
+<img width="1191" height="691" alt="image" src="https://github.com/user-attachments/assets/83bce28f-fca7-45cd-8980-204ebb957038" />
 
 ---
 
@@ -126,6 +131,9 @@ CREATE TABLE transactions (
   txn_date    TIMESTAMP DEFAULT NOW()
 );
 ```
+<img width="590" height="425" alt="Screenshot 2026-05-09 181356" src="https://github.com/user-attachments/assets/995c9a3c-ecfe-41b0-8219-999469e7ea7d" />
+
+<img width="584" height="146" alt="Screenshot 2026-05-09 181413" src="https://github.com/user-attachments/assets/093c58df-ad86-4de1-985a-4d72c6964722" />
 
 Populated with four synthetic customer records and three transactions.
 
@@ -143,6 +151,8 @@ Five suspicious actions were executed to generate realistic audit events:
 | 4 | Rogue account creation | `CREATE USER suspicious_user` + `GRANT ALL` | Privilege escalation / persistence |
 | 5 | Destructive action | `DROP TABLE transactions` | Audit trail destruction / sabotage |
 
+<img width="1162" height="622" alt="image" src="https://github.com/user-attachments/assets/2fe9f478-3fdb-41e4-a7b6-4fe98b8335eb" />
+
 ---
 
 ### 5. Extract & Analyse Audit Logs
@@ -151,6 +161,7 @@ Five suspicious actions were executed to generate realistic audit events:
 # Extract all AUDIT log entries (Windows PowerShell)
 docker logs pgaudit-lab 2>&1 | Select-String "AUDIT" > audit_report.txt
 ```
+<img width="728" height="463" alt="Screenshot 2026-05-09 182647" src="https://github.com/user-attachments/assets/f963a584-c7c1-43f1-a336-a0ce2494f3b7" />
 
 ---
 
@@ -237,4 +248,4 @@ Based on the audit findings, the following controls should be implemented in a p
 ## 📬 Connect with Me
 
 - **LinkedIn:** [Kyrian Onyeagusi](https://www.linkedin.com/in/kyrian-onyeagusi/)
-- **Email:** c_kyrian@icloud.com
+- **Email:** mailto:c_kyrian@icloud.com
